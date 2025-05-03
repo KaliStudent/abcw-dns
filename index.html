@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google-adsense-account" content="ca-pub-9090611700619794">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DNS Check - abcw.xyz</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <link href="/styles/main.css" rel="stylesheet">
+</head>
+<body class="grey darken-4 white-text">
+  <div class="container center-align" style="margin-top: 10vh;">
+    <h4 class="cyan-text text-lighten-2">DNS Diagnostic Tool</h4>
+    <div class="input-field">
+      <input id="domain" type="text" placeholder="example.com" />
+      <label for="domain">Enter a domain</label>
+    </div>
+    <button class="btn cyan" onclick="runCheck()">Run Check</button>
+    <div id="results" class="section"></div>
+  </div>
+
+  <script>
+    async function runCheck() {
+      const domain = document.getElementById('domain').value;
+      const res = await fetch('/api/check?domain=' + encodeURIComponent(domain));
+      const data = await res.json();
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '';
+      for (const [key, value] of Object.entries(data)) {
+        const card = document.createElement('div');
+        card.className = 'card grey darken-3 white-text';
+        card.innerHTML = `<div class="card-content"><span class="card-title">${key.toUpperCase()}</span><pre>${JSON.stringify(value, null, 2)}</pre></div>`;
+        resultsDiv.appendChild(card);
+      }
+    }
+  </script>
+</body>
+</html>
